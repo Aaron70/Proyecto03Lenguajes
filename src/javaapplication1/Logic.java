@@ -70,12 +70,9 @@ public class Logic {
     
     public String[][] placeCell(Integer posX, Integer posY, Integer val)
     {
-        if(val < 10 && val > 0)
-        {
-            String query = "placeNumber(res,"+posX.toString()+","+posY.toString()+","+val.toString()+").";
-            Query ql = new Query(query);
-            ql.hasSolution();
-        }
+        String query = "placeNumber(res,"+posX.toString()+","+posY.toString()+","+val.toString()+").";
+        Query ql = new Query(query);
+        ql.hasSolution();
         return this.getMatrix();
     }
 }
