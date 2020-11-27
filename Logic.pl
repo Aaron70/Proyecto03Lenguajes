@@ -46,9 +46,13 @@ createMatrix(Matrix,Row,Col):-
     Row >= MinRow,
     Col >= MinCol,
     asserta(dimensions(Row,Col)),
+
+    not(createColumns(solution,0)),
+    
     not(createColumns(Matrix,0)),
-    setRandomCells(Matrix,27),
-    makeValidMatrix(Matrix).
+    setRandomCells(Matrix,17),
+    makeValidMatrix(Matrix),
+    makeValidMatrix(solution),!.
 
 
 /*
@@ -106,6 +110,13 @@ placeNumber(Matrix,Row,Col,Val):-
 
 placeBlack(Matrix,Row,Col):- 
     isValidCell(Row,Col),
+    current_predicate(row/4),
+    getRow(Matrix,Row,Col,Col1,Col2),
+    retract(row(Matrix,Row,Col1,Col2)),
+    replaceFact(cell(Matrix,Row,Col,_),cell(Matrix,Row,Col,-1)).
+
+placeBlack(Matrix,Row,Col):- 
+    isValidCell(Row,Col),
     replaceFact(cell(Matrix,Row,Col,_),cell(Matrix,Row,Col,-1)).
 
 /*
@@ -126,6 +137,7 @@ setRandomCells(Matrix,Count):-
     X1 is X-1,
     Y1 is Y-1,
     placeBlack(Matrix,X1,Y1),
+    placeBlack(solution,X1,Y1),
     Count2 is Count-1,
     setRandomCells(Matrix,Count2).
 
@@ -288,32 +300,100 @@ makeValidColumn(Matrix,Ini,Col):-
     placeBlack(Matrix,RowIni,Col),
     makeValidColumn(Matrix,RowFin,Col).
 
-
 /*
 
 */
-getRowRemainingNumbers(Matrix,Row,Col,Res):-
-    AllNumbers = [1,2,3,4,5,6,7,8,9],
-    findall(Val,cell(Matrix,Row,Col,Val),Values),
-    difference(AllNumbers,Values,Remainings),
-    Res = Remainings.
-
-/*
-
-*/
-difference(List1,[],Res):- Res = List1.
-difference(List1,[Fr|List2],Res):- 
-    delete(List1, Fr, R),
-    write(List2),
-    difference(R,List2,Res).
-
-/*
-
-*/
-getRow(Matrix,Row,Col,Res):- 
+getRow(Matrix,Row,Col,Res1,Res2):- 
     row(Matrix,Row,Col1,Col2),
-    Col =< Col2,
+    Col < Col2,
     Col >= Col1,
-    Res = [Col1,Col2].
+    Res1 = Col1,
+    Res2 = Col2.
 
+/*
+
+*/
+getColumn(Matrix,Row,Col,Res1,Res2):- 
+    column(Matrix,Row1,Row2,Col),
+    Row < Row2,
+    Row >= Row1,
+    Res1 = Row1,
+    Res2 = Row2.
+
+/*
+
+*/
+getRowUsedNumbers(Matrix,Row,Col,Res):-
+    getRow(Matrix,Row,Col,Col1,Col2),
+    getRowUsedNumbersAux(Matrix,Row,Col1,Col2,[],Res),!.
+
+getRowUsedNumbersAux(_,_,Col2,Col2,List,List).
+getRowUsedNumbersAux(Matrix,Row,Col1,Col2,List,Res):-
+    isValidCell(Row,Col1),
+    cell(Matrix,Row,Col1,Val),
+    ColSig is Col1+1,
+    getRowUsedNumbersAux(Matrix,Row,ColSig,Col2,[Val|List],Res),!.
+
+/*
+
+*/
+getColumnUsedNumbers(Matrix,Row,Col,Res):-
+    getColumn(Matrix,Row,Col,Row1,Row2),
+    getColumnUsedNumbersAux(Matrix,Row1,Row2,Col,[],Res),!.
+
+getColumnUsedNumbersAux(_,Row2,Row2,_,List,List).
+getColumnUsedNumbersAux(Matrix,Row1,Row2,Col,List,Res):-
+    isValidCell(Row1,Col),
+    cell(Matrix,Row1,Col,Val),
+    RowSig is Row1+1,
+    getColumnUsedNumbersAux(Matrix,RowSig,Row2,Col,[Val|List],Res),!.
+
+/*
+
+*/
+getRemainingNumbers(Matrix,Row,Col,Res):-
+    AllNumbers = [1,2,3,4,5,6,7,8,9],
+    getRowUsedNumbers(Matrix,Row,Col,Values),
+    subtract(AllNumbers,Values,RemainingsRow),
+    getColumnUsedNumbers(Matrix,Row,Col,V),
+    subtract(RemainingsRow,V,Remainings),
+    Res = Remainings,!.
+
+/*
+
+*/
+fillRandomMatrix(Matrix):- 
+    cell(Matrix,X,Y,0),
+    getRemainingNumbers(Matrix,X,Y,Remainings),
+    length(Remainings,L),
+    random_between(0,L,Rnd),
+    nth0(Rnd, Remainings, Val),
+    placeNumber(Matrix,X,Y,Val),
+    fillRandomMatrix(Matrix).
+
+
+/*
+
+*/
+getRowSum(Matrix,Row,Col,Res):-
+    getRowUsedNumbers(Matrix,Row,Col,List),
+    sum_list(List,Sum),
+    Res = Sum.
+
+/*
+
+*/
+getRowsSums(Matrix,Res):-
+    dimensions(MaxRow,_),
+    Row is MaxRow-1,
+    getRowsSumsAux(Matrix,Row,[],R),
+    Res = R,!.
+
+
+getRowsSumsAux(Matrix,Row,List,Res):-
+    row(Matrix,Row,Col,_),
+    getRowSum(Matrix,Row,Col,Sum),
+    RowSig is Row-1,
+    getRowsSumsAux(Matrix,RowSig,[[Col,Sum]|List],Res),!.
+getRowsSumsAux(_,0,List,Res):- Res = List.
 
