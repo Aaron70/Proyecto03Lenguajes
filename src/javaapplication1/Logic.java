@@ -29,10 +29,21 @@ public class Logic {
         return ql.hasSolution();    
     }
     
+    public boolean solveMatrix(String matrix)
+    {
+        String query = "fillRandomMatrix("+matrix+").";
+        Query ql = new Query(query);
+        return ql.hasSolution();
+    }
+    
     public String doAQuery(String query)
     {
         Query ql = new Query(query);
-        return ql.oneSolution().get("Res").toString();
+        String res = "has not a solution";
+        if(ql.hasSolution()){
+            res = ql.oneSolution().get("Res").toString();
+        }
+        return res;
     }
     
     public void printM(String[][] m)
@@ -52,9 +63,9 @@ public class Logic {
       }
     }
     
-    public String[][] getMatrix()
+    public String[][] getMatrix(String name)
     {
-        String query = "getMatrix(res,Matrix).";
+        String query = "getMatrix("+name+",Matrix).";
         Query ql = new Query(query);
         String matrixProlog = ql.oneSolution().get("Matrix").toString().replace("[", "").replace(" ", "").replace("]]", "");
         //System.out.println(matrixProlog);
@@ -68,11 +79,11 @@ public class Logic {
         return matrix;
     }
     
-    public String[][] placeCell(Integer posX, Integer posY, Integer val)
+    public String[][] placeCell(String name,Integer posX, Integer posY, Integer val)
     {
-        String query = "placeNumber(res,"+posX.toString()+","+posY.toString()+","+val.toString()+").";
+        String query = "placeNumber("+name+","+posX.toString()+","+posY.toString()+","+val.toString()+").";
         Query ql = new Query(query);
         ql.hasSolution();
-        return this.getMatrix();
+        return this.getMatrix(name);
     }
 }
