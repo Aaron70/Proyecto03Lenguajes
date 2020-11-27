@@ -26,6 +26,7 @@ public class Main extends javax.swing.JFrame {
     
     final int BTNSIZE;
     final int MARGING;
+    int selected;
     String[][] matrix;
     Logic prolog;
     JButton[][] mButton;
@@ -37,7 +38,7 @@ public class Main extends javax.swing.JFrame {
         /*Setup of the program*/
         this.BTNSIZE = 60;
         this.MARGING = 10;
-        
+        this.selected = 0;
 
         
         initComponents();
@@ -91,8 +92,9 @@ public class Main extends javax.swing.JFrame {
        Integer[] indices = getIndices(btn);
        int x = indices[0];
        int y = indices[1];
-       updateMatrix(this.prolog.placeCell(x, y, 5),this.mButton);
-       System.out.println(this.prolog.doAQuery("makeValidColumn(res,0,"+indices[1].toString()+")."));
+       updateMatrix(this.prolog.placeCell(x, y, this.selected),this.mButton);
+       System.out.println(this.prolog.doAQuery("getRow(res,"+indices[0].toString()+","+indices[1].toString()+",Res)"));
+       //System.out.println(this.prolog.doAQuery("getRowRemainingNumbers(res,"+indices[0].toString()+","+indices[0].toString()+",Res)"));
    }
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -156,8 +158,18 @@ public class Main extends javax.swing.JFrame {
         });
 
         jButton1.setText("2");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
 
         jButton3.setText("3");
+        jButton3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton3ActionPerformed(evt);
+            }
+        });
 
         jButton4.setText("4");
         jButton4.addActionListener(new java.awt.event.ActionListener() {
@@ -167,8 +179,18 @@ public class Main extends javax.swing.JFrame {
         });
 
         jButton5.setText("5");
+        jButton5.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton5ActionPerformed(evt);
+            }
+        });
 
         jButton6.setText("6");
+        jButton6.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton6ActionPerformed(evt);
+            }
+        });
 
         jButton7.setText("7");
         jButton7.addActionListener(new java.awt.event.ActionListener() {
@@ -178,8 +200,18 @@ public class Main extends javax.swing.JFrame {
         });
 
         jButton8.setText("8");
+        jButton8.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton8ActionPerformed(evt);
+            }
+        });
 
         jButton9.setText("9");
+        jButton9.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton9ActionPerformed(evt);
+            }
+        });
 
         jLabel1.setText("Select Number");
 
@@ -281,15 +313,48 @@ public class Main extends javax.swing.JFrame {
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         // TODO add your handling code here:
+        this.selected = 1;
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
         // TODO add your handling code here:
+        this.selected = 4;
     }//GEN-LAST:event_jButton4ActionPerformed
 
     private void jButton7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton7ActionPerformed
         // TODO add your handling code here:
+        this.selected = 7;
     }//GEN-LAST:event_jButton7ActionPerformed
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        // TODO add your handling code here:
+        this.selected = 2;
+    }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
+        // TODO add your handling code here:
+        this.selected = 3;
+    }//GEN-LAST:event_jButton3ActionPerformed
+
+    private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
+        // TODO add your handling code here:
+        this.selected = 5;
+    }//GEN-LAST:event_jButton5ActionPerformed
+
+    private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
+        // TODO add your handling code here:
+        this.selected = 6;
+    }//GEN-LAST:event_jButton6ActionPerformed
+
+    private void jButton8ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton8ActionPerformed
+        // TODO add your handling code here:
+        this.selected = 8;
+    }//GEN-LAST:event_jButton8ActionPerformed
+
+    private void jButton9ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton9ActionPerformed
+        // TODO add your handling code here:
+        this.selected = 9;
+    }//GEN-LAST:event_jButton9ActionPerformed
     
     public void createMatrixGUI(JButton[][] matrix)
     {
@@ -326,6 +391,8 @@ public class Main extends javax.swing.JFrame {
                 {
                     btn.setBackground(Color.BLACK);
                     btn.setText("\\");
+                    //btn.setEnabled(false);
+                    btn.setAction(null);
                 }else
                 {
                     btn.setBackground(Color.WHITE);

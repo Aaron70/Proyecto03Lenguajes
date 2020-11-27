@@ -29,10 +29,10 @@ public class Logic {
         return ql.hasSolution();    
     }
     
-    public boolean doAQuery(String query)
+    public String doAQuery(String query)
     {
         Query ql = new Query(query);
-        return ql.hasSolution();
+        return ql.oneSolution().get("Res").toString();
     }
     
     public void printM(String[][] m)
@@ -64,7 +64,7 @@ public class Logic {
         {
             matrix[r] = rows[r].split(",");
         }
-        printM(matrix);
+        //printM(matrix);
         return matrix;
     }
     
@@ -74,6 +74,7 @@ public class Logic {
         {
             String query = "placeNumber(res,"+posX.toString()+","+posY.toString()+","+val.toString()+").";
             Query ql = new Query(query);
+            ql.hasSolution();
         }
         return this.getMatrix();
     }

@@ -47,7 +47,7 @@ createMatrix(Matrix,Row,Col):-
     Col >= MinCol,
     asserta(dimensions(Row,Col)),
     not(createColumns(Matrix,0)),
-    setRandomCells(Matrix,37),
+    setRandomCells(Matrix,27),
     makeValidMatrix(Matrix).
 
 
@@ -100,6 +100,8 @@ isValidCell(Row,Col):-
 */
 placeNumber(Matrix,Row,Col,Val):- 
     isValidCell(Row,Col),
+    cell(Matrix,Row,Col,OldVal),
+    not(OldVal is -1),
     replaceFact(cell(Matrix,Row,Col,_),cell(Matrix,Row,Col,Val)).
 
 placeBlack(Matrix,Row,Col):- 
@@ -221,11 +223,11 @@ getColumnBlackCloser(Matrix,Row,Col,Res):-
     Val is -1,
     Res = Row,!.
 
-getColumnBlackCloser(_,_,Col,Res):- 
+getColumnBlackCloser(_,Row,_,Res):- 
     dimensions(MaxRow,_),
     LimitRow is MaxRow-1,
     Row is LimitRow,
-    Res = Row,!.
+    Res = MaxRow,!.
 
 getColumnBlackCloser(_,_,_,Res):- Res is -1.
 
@@ -234,14 +236,14 @@ getColumnBlackCloser(_,_,_,Res):- Res is -1.
 */
 makeValidMatrix(Matrix):-
     dimensions(MaxRow,MaxCol),
-    MaxRow1 is MaxRow-1,
-    MaxCol1 is MaxCol-1,
-    makeValidMatrixAux(Matrix,MaxRow1,MaxCol1).
+    makeValidMatrixAux(Matrix,MaxRow,MaxCol),
+    makeValidMatrixAux(Matrix,MaxRow,MaxCol).
 
 makeValidMatrixAux(Matrix,Row,Column):- 
-    Row > 0,
-    Column >  0,
+    Row >= 0,
+    Column >=  0,
     not(makeValidRows(Matrix,Row,0)),
+    not(makeValidColumn(Matrix,0,Column)),
     Row1 is Row-1,
     Column1 is Column-1,
     makeValidMatrixAux(Matrix,Row1,Column1).
@@ -256,7 +258,7 @@ makeValidRows(Matrix,Row,Ini):-
     getRowBlackCloser(Matrix,Row,ColIni,ColFin),
     Distance is ColFin - ColIni,
     Distance >= 2,
-    asserta(row(Matrix,ColIni,ColFin)),
+    asserta(row(Matrix,Row,ColIni,ColFin)),
     makeValidRows(Matrix,Row,ColFin).
 
 makeValidRows(Matrix,Row,Ini):- 
@@ -264,7 +266,7 @@ makeValidRows(Matrix,Row,Ini):-
     getRowBlackCloser(Matrix,Row,ColIni,ColFin),
     Distance is ColFin - ColIni,
     Distance is 1,
-    placeNumber(Matrix,Row,ColIni,-1),
+    placeBlack(Matrix,Row,ColIni),
     makeValidRows(Matrix,Row,ColFin).
 
 /*
@@ -275,7 +277,7 @@ makeValidColumn(Matrix,Ini,Col):-
     getColumnBlackCloser(Matrix,RowIni,Col,RowFin),
     Distance is RowFin - RowIni,
     Distance >= 2,
-    asserta(column(Matrix,RowIni,RowFin)),
+    asserta(column(Matrix,RowIni,RowFin,Col)),
     makeValidColumn(Matrix,RowFin,Col).
 
 makeValidColumn(Matrix,Ini,Col):- 
@@ -283,9 +285,35 @@ makeValidColumn(Matrix,Ini,Col):-
     getColumnBlackCloser(Matrix,RowIni,Col,RowFin),
     Distance is RowFin - RowIni,
     Distance is 1,
-    placeNumber(Matrix,RowIni,Col,-1),
+    placeBlack(Matrix,RowIni,Col),
     makeValidColumn(Matrix,RowFin,Col).
 
 
+/*
+
+*/
+getRowRemainingNumbers(Matrix,Row,Col,Res):-
+    AllNumbers = [1,2,3,4,5,6,7,8,9],
+    findall(Val,cell(Matrix,Row,Col,Val),Values),
+    difference(AllNumbers,Values,Remainings),
+    Res = Remainings.
+
+/*
+
+*/
+difference(List1,[],Res):- Res = List1.
+difference(List1,[Fr|List2],Res):- 
+    delete(List1, Fr, R),
+    write(List2),
+    difference(R,List2,Res).
+
+/*
+
+*/
+getRow(Matrix,Row,Col,Res):- 
+    row(Matrix,Row,Col1,Col2),
+    Col =< Col2,
+    Col >= Col1,
+    Res = [Col1,Col2].
 
 
