@@ -47,7 +47,8 @@ createMatrix(Matrix,Row,Col):-
     Col >= MinCol,
     asserta(dimensions(Row,Col)),
     not(createColumns(Matrix,0)),
-    setRandomCells(Matrix,12).
+    setRandomCells(Matrix,37),
+    makeValidMatrix(Matrix).
 
 
 /*
@@ -126,44 +127,165 @@ setRandomCells(Matrix,Count):-
     Count2 is Count-1,
     setRandomCells(Matrix,Count2).
 
-getBlankCloser(Matrix,Row,Col,Res):- 
+/*
+
+*/
+getRowBlankCloser(Matrix,Row,Col,Res):- 
     isValidCell(Row,Col),
     cell(Matrix,Row,Col,Val),
     Val is -1,
     ColSig is Col+1,
-    getBlankCloser(Matrix,Row,ColSig,Res).
+    getRowBlankCloser(Matrix,Row,ColSig,Res).
 
-getBlankCloser(Matrix,Row,Col,Res):- 
+getRowBlankCloser(Matrix,Row,Col,Res):- 
     isValidCell(Row,Col),
     cell(Matrix,Row,Col,Val),
     not(Val is -1),
-    placeNumber(Matrix,Row,Col,9),
     Res = Col,!.
 
-getBlankCloser(_,_,_,Res):- Res is -1.
+getRowBlankCloser(_,_,Col,Res):- 
+    dimensions(_,MaxCol),
+    LimitCol is MaxCol-1,
+    Col is LimitCol,
+    Res = Col,!.
 
+getRowBlankCloser(_,_,_,Res):- Res is -1.
 
-getBlackCloser(Matrix,Row,Col,Res):- 
+/*
+
+*/
+getColumnBlankCloser(Matrix,Row,Col,Res):- 
     isValidCell(Row,Col),
-    dimensions(MaxRow,MaxCol),
+    cell(Matrix,Row,Col,Val),
+    Val is -1,
+    RowSig is Row+1,
+    getColumnBlankCloser(Matrix,RowSig,Col,Res).
+
+getColumnBlankCloser(Matrix,Row,Col,Res):- 
+    isValidCell(Row,Col),
+    cell(Matrix,Row,Col,Val),
+    not(Val is -1),
+    Res = Row,!.
+
+getColumnBlankCloser(_,Row,_,Res):- 
+    dimensions(MaxRow,_),
+    LimitRow is MaxRow-1,
+    Row is LimitRow,
+    Res = Row,!.
+
+getColumnBlankCloser(_,_,_,Res):- Res is -1.
+
+/*
+
+*/
+getRowBlackCloser(Matrix,Row,Col,Res):- 
+    isValidCell(Row,Col),
+    dimensions(_,MaxCol),
     LimitCol is MaxCol-1,
     cell(Matrix,Row,Col,Val),
     Col < LimitCol,
     not(Val is -1),
     ColSig is Col+1,
-    getBlackCloser(Matrix,Row,ColSig,Res).
+    getRowBlackCloser(Matrix,Row,ColSig,Res).
 
-getBlackCloser(Matrix,Row,Col,Res):- 
+getRowBlackCloser(Matrix,Row,Col,Res):- 
     isValidCell(Row,Col),
     cell(Matrix,Row,Col,Val),
     Val is -1,
     Res = Col,!.
 
-getBlackCloser(Matrix,Row,Col,Res):- 
-    dimensions(MaxRow,MaxCol),
+getRowBlackCloser(_,_,Col,Res):- 
+    dimensions(_,MaxCol),
     LimitCol is MaxCol-1,
     Col is LimitCol,
-    Res = Col,!.
+    Res = MaxCol,!.
 
-getBlackCloser(_,_,_,Res):- Res is -1.
+getRowBlackCloser(_,_,_,Res):- Res is -1.
+
+/*
+
+*/
+getColumnBlackCloser(Matrix,Row,Col,Res):- 
+    isValidCell(Row,Col),
+    dimensions(MaxRow,_),
+    LimitRow is MaxRow-1,
+    cell(Matrix,Row,Col,Val),
+    Row < LimitRow,
+    not(Val is -1),
+    RowSig is Row+1,
+    getColumnBlackCloser(Matrix,RowSig,Col,Res).
+
+getColumnBlackCloser(Matrix,Row,Col,Res):- 
+    isValidCell(Row,Col),
+    cell(Matrix,Row,Col,Val),
+    Val is -1,
+    Res = Row,!.
+
+getColumnBlackCloser(_,_,Col,Res):- 
+    dimensions(MaxRow,_),
+    LimitRow is MaxRow-1,
+    Row is LimitRow,
+    Res = Row,!.
+
+getColumnBlackCloser(_,_,_,Res):- Res is -1.
+
+/*
+
+*/
+makeValidMatrix(Matrix):-
+    dimensions(MaxRow,MaxCol),
+    MaxRow1 is MaxRow-1,
+    MaxCol1 is MaxCol-1,
+    makeValidMatrixAux(Matrix,MaxRow1,MaxCol1).
+
+makeValidMatrixAux(Matrix,Row,Column):- 
+    Row > 0,
+    Column >  0,
+    not(makeValidRows(Matrix,Row,0)),
+    Row1 is Row-1,
+    Column1 is Column-1,
+    makeValidMatrixAux(Matrix,Row1,Column1).
+makeValidMatrixAux(_,0,0):-!.
+
+
+/*
+
+*/
+makeValidRows(Matrix,Row,Ini):- 
+    getRowBlankCloser(Matrix,Row,Ini,ColIni),
+    getRowBlackCloser(Matrix,Row,ColIni,ColFin),
+    Distance is ColFin - ColIni,
+    Distance >= 2,
+    asserta(row(Matrix,ColIni,ColFin)),
+    makeValidRows(Matrix,Row,ColFin).
+
+makeValidRows(Matrix,Row,Ini):- 
+    getRowBlankCloser(Matrix,Row,Ini,ColIni),
+    getRowBlackCloser(Matrix,Row,ColIni,ColFin),
+    Distance is ColFin - ColIni,
+    Distance is 1,
+    placeNumber(Matrix,Row,ColIni,-1),
+    makeValidRows(Matrix,Row,ColFin).
+
+/*
+
+*/
+makeValidColumn(Matrix,Ini,Col):- 
+    getColumnBlankCloser(Matrix,Ini,Col,RowIni),
+    getColumnBlackCloser(Matrix,RowIni,Col,RowFin),
+    Distance is RowFin - RowIni,
+    Distance >= 2,
+    asserta(column(Matrix,RowIni,RowFin)),
+    makeValidColumn(Matrix,RowFin,Col).
+
+makeValidColumn(Matrix,Ini,Col):- 
+    getColumnBlankCloser(Matrix,Ini,Col,RowIni),
+    getColumnBlackCloser(Matrix,RowIni,Col,RowFin),
+    Distance is RowFin - RowIni,
+    Distance is 1,
+    placeNumber(Matrix,RowIni,Col,-1),
+    makeValidColumn(Matrix,RowFin,Col).
+
+
+
 

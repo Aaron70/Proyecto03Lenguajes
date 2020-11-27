@@ -92,7 +92,7 @@ public class Main extends javax.swing.JFrame {
        int x = indices[0];
        int y = indices[1];
        updateMatrix(this.prolog.placeCell(x, y, 5),this.mButton);
-       System.out.println(this.prolog.doAQuery("getBlackCloser(res,"+indices[0].toString()+","+indices[1].toString()+",Res)."));
+       System.out.println(this.prolog.doAQuery("makeValidColumn(res,0,"+indices[1].toString()+")."));
    }
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
