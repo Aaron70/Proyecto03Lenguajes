@@ -106,6 +106,19 @@ placeNumber(Matrix,Row,Col,Val):-
     isValidCell(Row,Col),
     cell(Matrix,Row,Col,OldVal),
     not(OldVal is -1),
+    cell(Matrix,Row,Col1,Val),
+    not(Col1 is Col),
+    getRow(Matrix,Row,Col,ColR1,_),
+    getRow(Matrix,Row,Col1,ColR2,_),
+    ColR1 =:= ColR2,
+    asserta(rowRepeatedValue(ColR1,Matrix,Row,Val)),
+    replaceFact(cell(Matrix,Row,Col,_),cell(Matrix,Row,Col,Val)).
+
+placeNumber(Matrix,Row,Col,Val):- 
+    isValidCell(Row,Col),
+    cell(Matrix,Row,Col,OldVal),
+    not(OldVal is -1),
+    /*retract(repeatedRow(Matrix,Row,Col,_,OldVal)),*/
     replaceFact(cell(Matrix,Row,Col,_),cell(Matrix,Row,Col,Val)).
 
 placeBlack(Matrix,Row,Col):- 
@@ -386,14 +399,123 @@ getRowSum(Matrix,Row,Col,Res):-
 getRowsSums(Matrix,Res):-
     dimensions(MaxRow,_),
     Row is MaxRow-1,
-    getRowsSumsAux(Matrix,Row,[],R),
+    getRowsSumsAux(Matrix,Row,0,[],R),
     Res = R,!.
 
+/*
 
-getRowsSumsAux(Matrix,Row,List,Res):-
-    row(Matrix,Row,Col,_),
+*/
+getRowsSumsAux(_,0,_,List,Res):- Res = List.
+
+getRowsSumsAux(Matrix,Row,Column,List,Res):-
+    getRowBlankCloser(Matrix,Row,Column,Col),
+    row(Matrix,Row,Col,ColFin),
     getRowSum(Matrix,Row,Col,Sum),
-    RowSig is Row-1,
-    getRowsSumsAux(Matrix,RowSig,[[Col,Sum]|List],Res),!.
-getRowsSumsAux(_,0,List,Res):- Res = List.
+    ColSig is ColFin+1,
+    getRowsSumsAux(Matrix,Row,ColSig,[[Row,Col,Sum]|List],Res),!.
 
+
+
+getRowsSumsAux(Matrix,Row,_,List,Res):-
+    RowSig is Row-1,
+    getRowsSumsAux(Matrix,RowSig,0,List,Res).
+
+/*
+
+*/
+getColumnSum(Matrix,Row,Col,Res):-
+    getColumnUsedNumbers(Matrix,Row,Col,List),
+    sum_list(List,Sum),
+    Res = Sum.
+
+/*
+
+*/
+getColumnsSums(Matrix,Res):-
+    dimensions(_,MaxCol),
+    Col is MaxCol-1,
+    getColumnsSumsAux(Matrix,0,Col,[],R),
+    Res = R,!.
+
+/*
+
+*/
+getColumnsSumsAux(_,_,0,List,Res):- Res = List.
+
+getColumnsSumsAux(Matrix,Row,Column,List,Res):-
+    getColumnBlankCloser(Matrix,Row,Column,Row1),
+    column(Matrix,Row1,RowFin,Column),
+    getColumnSum(Matrix,Row1,Column,Sum),
+    RowSig is RowFin+1,
+    getColumnsSumsAux(Matrix,RowSig,Column,[[Row1,Column,Sum]|List],Res),!.
+
+
+getColumnsSumsAux(Matrix,_,Col,List,Res):-
+    ColSig is Col-1,
+    getColumnsSumsAux(Matrix,0,ColSig,List,Res).
+
+/*
+
+*/
+getInvalidFullRowsCells(Matrix,Res):-
+    dimensions(MaxRow,_),
+    Row is MaxRow-1,
+    getInvalidFullRowsCellsAux(Matrix,Row,[],R),
+    Res = R.
+    
+getInvalidFullRowsCellsAux(_,0,List,Res):- sort(List,Sorted),Res = Sorted.
+getInvalidFullRowsCellsAux(Matrix,Row,List,Res):-
+    getInvalidFullRowCells(Matrix,Row,R),
+    RowSig is Row-1,
+    getInvalidFullRowsCellsAux(Matrix,RowSig,[[Row,R]|List],Res).
+
+/*
+
+*/
+getInvalidFullRowCells(Matrix,Row,Res):-
+    findall(ID,row(Matrix,Row,ID,_),IDS),
+    getInvalidFullRowCellsAux(Matrix,Row,IDS,[],R),
+    sort(R,Sorted),
+    Res = Sorted.
+
+getInvalidFullRowCellsAux(_,_,[],List,Res):- Res = List.
+getInvalidFullRowCellsAux(Matrix,Row,[IniID|IDS],List,Res):-
+    getInvalidRowCells(Matrix,Row,IniID,R),
+    sort(R,Sorted),
+    getInvalidFullRowCellsAux(Matrix,Row,IDS,[Sorted|List],Res).
+
+/*
+
+*/
+getInvalidRowCells(Matrix,Row,ID,Res):-
+    current_predicate(rowRepeatedValue/4),
+    findall(Val,rowRepeatedValue(ID,Matrix,Row,Val),Repeateds),
+    sort(Repeateds,Values),
+    getInvalidRowCellsAux(Matrix,Row,ID,Values,[],R),
+    Res = R.
+
+getInvalidRowCellsAux(_,_,_,[],Temp,Res):- Res = Temp.
+getInvalidRowCellsAux(Matrix,Row,ID,[Val|List],Temp,Res):- 
+    Val > 0,
+    findall(Col,(cell(Matrix,Row,Col,Val),getRow(Matrix,Row,Col,ColID,_),ColID is ID),Columns),
+    sort(Columns,Cols),
+    getInvalidRowCellsAux(Matrix,Row,ID,List,[Cols|Temp],Res).
+
+getInvalidRowCellsAux(Matrix,Row,ID,[Val|List],Temp,Res):- 
+    Val =< 0,
+    getInvalidRowCellsAux(Matrix,Row,ID,List,Temp,Res).
+
+/*
+
+*/
+getInvalidRowsCells(Matrix,Res):-
+    dimensions(MaxRow,_),
+    Row is MaxRow-1,
+    getInvalidRowsCells(Matrix,Row,[],R),
+    Res = R.
+
+getInvalidRowsCells(_,0,List,Res):- Res = List.
+getInvalidRowsCells(Matrix,Row,List,Res):-
+    getInvalidRowCells(Matrix,Row,Cols),
+    RowSig is Row-1,
+    getInvalidRowsCells(Matrix,RowSig,[Cols|List],Res).
