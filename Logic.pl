@@ -106,6 +106,24 @@ placeNumber(Matrix,Row,Col,Val):-
     isValidCell(Row,Col),
     cell(Matrix,Row,Col,OldVal),
     not(OldVal is -1),
+    cell(Matrix,Row1,Col,Val),
+    not(Row1 is Row),
+    getColumn(Matrix,Row,Col,RowR1,_),
+    getColumn(Matrix,Row1,Col,RowR2,_),
+    RowR1 =:= RowR2,
+    asserta(columnRepeatedValue(RowR1,Matrix,Col,Val)),
+    cell(Matrix,Row,Col1,Val),
+    not(Col1 is Col),
+    getRow(Matrix,Row,Col,ColR1,_),
+    getRow(Matrix,Row,Col1,ColR2,_),
+    ColR1 =:= ColR2,
+    asserta(rowRepeatedValue(ColR1,Matrix,Row,Val)),
+    replaceFact(cell(Matrix,Row,Col,_),cell(Matrix,Row,Col,Val)).
+
+placeNumber(Matrix,Row,Col,Val):- 
+    isValidCell(Row,Col),
+    cell(Matrix,Row,Col,OldVal),
+    not(OldVal is -1),
     cell(Matrix,Row,Col1,Val),
     not(Col1 is Col),
     getRow(Matrix,Row,Col,ColR1,_),
@@ -456,6 +474,33 @@ getColumnsSumsAux(Matrix,_,Col,List,Res):-
 
 /*
 
+deleteNotRepeatedRowCells(Matrix,Row):- 
+    current_predicate(rowRepeatedValue/4),
+    rowRepeatedValue(Col,Matrix,Row,Val),
+    cell(Matrx,Row,ColF,Val),
+    getRow(Matrix,Row,ColF,ColID,_),
+    ColID is Col,
+    findall(Col1,rowRepeatedValue(Col1,Matrix,Row,Val),Repeateds),
+    length(Repeateds,Len),
+    Len < 2,
+    NVal is Len,
+    placeNumber(Matrix,Row,ColF,NVal).
+*/
+isRepeatedRow(Matrix,Row,Val):-
+        cell(Matrix,Row,Col1,Val),
+        cell(Matrix,Row,Col2,Val),
+        not(Col1 is Col2).
+
+deleteNotRepeatedRowCells(Matrix,Row):- 
+    current_predicate(rowRepeatedValue/4),
+    rowRepeatedValue(Col,Matrix,Row,Val),
+    cell(Matrix,Row,Col1,Val),
+    not(isRepeatedRow(Matrix,Row,Val)),
+    retract(rowRepeatedValue(Col,Matrix,Row,Val)).
+
+
+/*
+
 */
 getInvalidFullRowsCells(Matrix,Res):-
     dimensions(MaxRow,_),
@@ -464,6 +509,12 @@ getInvalidFullRowsCells(Matrix,Res):-
     Res = R.
     
 getInvalidFullRowsCellsAux(_,0,List,Res):- sort(List,Sorted),Res = Sorted.
+getInvalidFullRowsCellsAux(Matrix,Row,List,Res):-
+    deleteNotRepeatedRowCells(Matrix,Row),
+    getInvalidFullRowCells(Matrix,Row,R),
+    RowSig is Row-1,
+    getInvalidFullRowsCellsAux(Matrix,RowSig,[[Row,R]|List],Res).
+
 getInvalidFullRowsCellsAux(Matrix,Row,List,Res):-
     getInvalidFullRowCells(Matrix,Row,R),
     RowSig is Row-1,
@@ -487,6 +538,8 @@ getInvalidFullRowCellsAux(Matrix,Row,[IniID|IDS],List,Res):-
 /*
 
 */
+
+
 getInvalidRowCells(Matrix,Row,ID,Res):-
     current_predicate(rowRepeatedValue/4),
     findall(Val,rowRepeatedValue(ID,Matrix,Row,Val),Repeateds),
@@ -519,3 +572,106 @@ getInvalidRowsCells(Matrix,Row,List,Res):-
     getInvalidRowCells(Matrix,Row,Cols),
     RowSig is Row-1,
     getInvalidRowsCells(Matrix,RowSig,[Cols|List],Res).
+
+
+/*
+****************************************************************************************************************
+*/
+
+isRepeatedColumn(Matrix,Col,Val):-
+        cell(Matrix,Row1,Col,Val),
+        cell(Matrix,Row2,Col,Val),
+        not(Row1 is Row2).
+
+deleteNotRepeatedColumnCells(Matrix,Col):- 
+    current_predicate(columnRepeatedValue/4),
+    columnRepeatedValue(Row,Matrix,Col,Val),
+    cell(Matrix,Row1,Col,Val),
+    not(isRepeatedColumn(Matrix,Col,Val)),
+    retractall(columnRepeatedValue(Row,Matrix,Col,Val)).
+
+/**/
+getInvalidFullColumnsCells(Matrix,Res):-
+    dimensions(_,MaxCol),
+    Col is MaxCol-1,
+    getInvalidFullColumnsCellsAux(Matrix,Col,[],R),
+    Res = R.
+    
+getInvalidFullColumnsCellsAux(_,0,List,Res):- sort(List,Sorted),Res = Sorted.
+getInvalidFullColumnsCellsAux(Matrix,Col,List,Res):-
+    deleteNotRepeatedColumnCells(Matrix,Col),
+    getInvalidFullColumnCells(Matrix,Col,R),
+    ColSig is Col-1,
+    getInvalidFullColumnsCellsAux(Matrix,ColSig,[[Col,R]|List],Res).
+
+getInvalidFullColumnsCellsAux(Matrix,Col,List,Res):-
+    getInvalidFullColumnCells(Matrix,Col,R),
+    ColSig is Col-1,
+    getInvalidFullColumnsCellsAux(Matrix,ColSig,[[Col,R]|List],Res).
+/*
+
+*/
+getInvalidFullColumnCells(Matrix,Col,Res):-
+    findall(ID,column(Matrix,ID,_,Col),IDS),
+    getInvalidFullColumnCellsAux(Matrix,Col,IDS,[],R),
+    sort(R,Sorted),
+    Res = Sorted.
+
+getInvalidFullColumnCellsAux(_,_,[],List,Res):- Res = List.
+getInvalidFullColumnCellsAux(Matrix,Col,[IniID|IDS],List,Res):-
+    getInvalidColumnCells(Matrix,Col,IniID,R),
+    sort(R,Sorted),
+    getInvalidFullColumnCellsAux(Matrix,Col,IDS,[Sorted|List],Res).
+
+/*
+
+*/
+getInvalidColumnCells(Matrix,Col,ID,Res):-
+    current_predicate(columnRepeatedValue/4),
+    findall(Val,columnRepeatedValue(ID,Matrix,Col,Val),Repeateds),
+    sort(Repeateds,Values),
+    getInvalidColumnCellsAux(Matrix,Col,ID,Values,[],R),
+    Res = R.
+
+getInvalidColumnCellsAux(_,_,_,[],Temp,Res):- Res = Temp.
+getInvalidColumnCellsAux(Matrix,Col,ID,[Val|List],Temp,Res):- 
+    Val > 0,
+    findall(Row,(cell(Matrix,Row,Col,Val),getColumn(Matrix,Row,Col,RowID,_),RowID is ID),Columns),
+    sort(Columns,Cols),
+    getInvalidColumnCellsAux(Matrix,Col,ID,List,[Cols|Temp],Res).
+
+getInvalidColumnCellsAux(Matrix,Col,ID,[Val|List],Temp,Res):- 
+    Val =< 0,
+    getInvalidColumnCellsAux(Matrix,Col,ID,List,Temp,Res).
+
+/*
+
+*/
+getInvalidColumsCells(Matrix,Res):-
+    dimensions(_,MaxCol),
+    Col is MaxCol-1,
+    getInvalidColumsCells(Matrix,Col,[],R),
+    Res = R.
+
+getInvalidColumsCells(_,0,List,Res):- Res = List.
+getInvalidColumsCells(Matrix,Col,List,Res):-
+    getInvalidColumnCells(Matrix,Col,Cols),
+    ColSig is Col-1,
+    getInvalidColumsCells(Matrix,ColSig,[Cols|List],Res).
+
+validateSum(Matrix,Row,Col):-
+    getRowSum(Matrix,Row,Col,SumRes),
+    getRowSum(solution,Row,Col,SolRes),
+    SolRes is SumRes.
+
+validateRowSum(Matrix,Row):-
+    row(Matrix,Rw,Col,_),
+    not(validateSum(Matrix,Rw,Col)).
+
+
+won(Matrix):-
+    wonAux(Matrix,9).
+    
+wonAux(_,0):-!.
+wonAux(Matrix,Row):-
+    not(validateRowSum(Matrix,Row)).
