@@ -159,6 +159,8 @@ public class Logic {
         return matrix;
     }
     
+
+    
     public void printM(String[][] m)
     {
       for (int i = 0; i < m.length; i++)

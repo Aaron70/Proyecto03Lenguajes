@@ -127,6 +127,7 @@ public class Main extends javax.swing.JFrame {
        //System.out.println(this.prolog.doAQuery("getRemainingNumbers(res,"+x.toString()+","+y.toString()+",Res)."));
        //System.out.println(this.prolog.doAQuery("getInvalidRowCells(res,"+x+","+y+",Res)."));
        System.out.println(this.prolog.doAQuery("won(res).",false));
+
    }
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {

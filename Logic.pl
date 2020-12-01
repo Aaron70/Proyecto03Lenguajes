@@ -539,7 +539,6 @@ getInvalidFullRowCellsAux(Matrix,Row,[IniID|IDS],List,Res):-
 
 */
 
-
 getInvalidRowCells(Matrix,Row,ID,Res):-
     current_predicate(rowRepeatedValue/4),
     findall(Val,rowRepeatedValue(ID,Matrix,Row,Val),Repeateds),
@@ -572,7 +571,6 @@ getInvalidRowsCells(Matrix,Row,List,Res):-
     getInvalidRowCells(Matrix,Row,Cols),
     RowSig is Row-1,
     getInvalidRowsCells(Matrix,RowSig,[Cols|List],Res).
-
 
 /*
 ****************************************************************************************************************
