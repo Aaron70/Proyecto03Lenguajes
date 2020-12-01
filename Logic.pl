@@ -474,17 +474,6 @@ getColumnsSumsAux(Matrix,_,Col,List,Res):-
 
 /*
 
-deleteNotRepeatedRowCells(Matrix,Row):- 
-    current_predicate(rowRepeatedValue/4),
-    rowRepeatedValue(Col,Matrix,Row,Val),
-    cell(Matrx,Row,ColF,Val),
-    getRow(Matrix,Row,ColF,ColID,_),
-    ColID is Col,
-    findall(Col1,rowRepeatedValue(Col1,Matrix,Row,Val),Repeateds),
-    length(Repeateds,Len),
-    Len < 2,
-    NVal is Len,
-    placeNumber(Matrix,Row,ColF,NVal).
 */
 isRepeatedRow(Matrix,Row,Val):-
         cell(Matrix,Row,Col1,Val),
@@ -494,7 +483,6 @@ isRepeatedRow(Matrix,Row,Val):-
 deleteNotRepeatedRowCells(Matrix,Row):- 
     current_predicate(rowRepeatedValue/4),
     rowRepeatedValue(Col,Matrix,Row,Val),
-    cell(Matrix,Row,Col1,Val),
     not(isRepeatedRow(Matrix,Row,Val)),
     retract(rowRepeatedValue(Col,Matrix,Row,Val)).
 
@@ -584,7 +572,6 @@ isRepeatedColumn(Matrix,Col,Val):-
 deleteNotRepeatedColumnCells(Matrix,Col):- 
     current_predicate(columnRepeatedValue/4),
     columnRepeatedValue(Row,Matrix,Col,Val),
-    cell(Matrix,Row1,Col,Val),
     not(isRepeatedColumn(Matrix,Col,Val)),
     retractall(columnRepeatedValue(Row,Matrix,Col,Val)).
 
@@ -670,3 +657,35 @@ validateRowSum(Matrix):-
 won(Matrix):-
     not(validateRowSum(Matrix)).
     
+resetMatrix(Matrix):-
+    cell(Matrix,Row,Col,Val),
+    not(Val is -1),
+    placeNumber(Matrix,Row,Col,0),
+    retractall(rowRepeatedValue(_,Matrix,_,_)),
+    retractall(columnRepeatedValue(_,Matrix,_,_)),fail.
+
+deleteGame():-
+    retract(cell(_,_,_,_)),
+    retractall(rowRepeatedValue(_,_,_,_)),
+    retractall(columnRepeatedValue(_,_,_,_)),
+    retractall(dimensions(_,_)),
+    retractall(row(_,_,_,_)),
+    retractall(column(_,_,_,_)).
+
+suggestion(Res):-
+    dimensions(MaxRow,MaxCol),
+    random_between(1,MaxRow,Row),
+    random_between(1,MaxCol,Col),
+    cell(solution,Row,Col,Val),
+    Val is -1,
+    suggestion(Res).
+    
+suggestion(Res):-
+    dimensions(MaxRow,MaxCol),
+    random_between(1,MaxRow,Row),
+    random_between(1,MaxCol,Col),
+    cell(solution,Row,Col,Val),
+    not(Val is -1),
+    Res = [Row,Col,Val].
+
+

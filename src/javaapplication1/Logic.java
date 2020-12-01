@@ -15,11 +15,17 @@ import org.jpl7.Variable;
  * @author Aaron
  */
 public class Logic {
-    
+    private Query ql;
     public Logic(String path)
     {
-        Query q1 = new Query(path);
-        System.out.println(q1.hasSolution());
+        this.ql = new Query(path);
+        System.out.println(this.ql.hasSolution());
+    }
+    
+    public void close()
+    {
+        this.ql.close();
+        
     }
     
     public boolean createMatrix(Integer rows, Integer columns)
@@ -34,6 +40,11 @@ public class Logic {
         String query = "fillRandomMatrix("+matrix+").";
         Query ql = new Query(query);
         return ql.hasSolution();
+    }
+    
+    public void deleteGame()
+    {
+        this.doAQuery("deleteGame().",false);
     }
     
     public String doAQuery(String query,boolean hasRes)

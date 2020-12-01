@@ -42,6 +42,9 @@
           <Image iconType="3" name="/javaapplication1/f3.jpg"/>
         </Property>
       </Properties>
+      <Events>
+        <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="jLabel1MouseClicked"/>
+      </Events>
     </Component>
   </SubComponents>
 </Form>
