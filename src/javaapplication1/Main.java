@@ -126,7 +126,8 @@ public class Main extends javax.swing.JFrame {
        updateMatrix(this.prolog.placeCell("res",x, y, this.selected),this.mButton);
        //System.out.println(this.prolog.doAQuery("getRemainingNumbers(res,"+x.toString()+","+y.toString()+",Res)."));
        //System.out.println(this.prolog.doAQuery("getInvalidRowCells(res,"+x+","+y+",Res)."));
-       System.out.println(this.prolog.doAQuery("getInvalidFullRowsCells(res,Res)."));
+       System.out.println(this.prolog.doAQuery("won(res).",false));
+
    }
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -448,6 +449,7 @@ public class Main extends javax.swing.JFrame {
         // TODO add your handling code here:
         this.prolog.getInvalidRows("res");
         markInvalidRows();
+        markInvalidColumns();
     }//GEN-LAST:event_jButton12ActionPerformed
     
     private void markInvalidRows()
@@ -455,6 +457,9 @@ public class Main extends javax.swing.JFrame {
         String[][][] rows = this.prolog.getInvalidRows("res");
         for(int i = 0; i < rows.length; i++)
         {
+            if(rows[i] == null){
+                continue;
+            }
             for(int j = 1; j < rows[i].length; j++)
             {
                 Integer x = new Integer(rows[i][0][0]);
@@ -465,6 +470,33 @@ public class Main extends javax.swing.JFrame {
                         if(!rows[i][j][k].equals(""))
                         {
                             Integer y = new Integer(rows[i][j][k]);
+                            this.mButton[x][y].setBackground(Color.red);
+                            System.out.println("Eje x: "+x.toString()+"\nEje y: "+y.toString());   
+                        }
+                    }
+                }
+            }
+        }
+    }
+    
+    private void markInvalidColumns()
+    {
+        String[][][] rows = this.prolog.getInvalidColumns("res");
+        for(int i = 0; i < rows.length; i++)
+        {
+            if(rows[i] == null){
+                continue;
+            }
+            for(int j = 1; j < rows[i].length; j++)
+            {
+                Integer y = new Integer(rows[i][0][0]);
+                if(rows[i].length > 1)
+                {                        
+                    for (int k = 0; k < rows[i][j].length; k++)
+                    {
+                        if(!rows[i][j][k].equals(""))
+                        {
+                            Integer x = new Integer(rows[i][j][k]);
                             this.mButton[x][y].setBackground(Color.red);
                             System.out.println("Eje x: "+x.toString()+"\nEje y: "+y.toString());   
                         }
