@@ -662,14 +662,11 @@ validateSum(Matrix,Row,Col):-
     getRowSum(solution,Row,Col,SolRes),
     SolRes is SumRes.
 
-validateRowSum(Matrix,Row):-
+validateRowSum(Matrix):-
     row(Matrix,Rw,Col,_),
     not(validateSum(Matrix,Rw,Col)).
 
 
 won(Matrix):-
-    wonAux(Matrix,9).
+    not(validateRowSum(Matrix)).
     
-wonAux(_,0):-!.
-wonAux(Matrix,Row):-
-    not(validateRowSum(Matrix,Row)).
