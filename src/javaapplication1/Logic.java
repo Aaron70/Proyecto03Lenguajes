@@ -36,20 +36,68 @@ public class Logic {
         return ql.hasSolution();
     }
     
-    public String doAQuery(String query)
+    public String doAQuery(String query,boolean hasRes)
     {
         Query ql = new Query(query);
-        String res = "has not a solution";
-        if(ql.hasSolution()){
-            res = ql.oneSolution().get("Res").toString();
+        if(hasRes)
+        {
+            String res = "has not a solution";
+            if(ql.hasSolution()){
+                res = ql.oneSolution().get("Res").toString();
+            }
+            return res;  
+        }else{
+            if(ql.hasSolution())
+            {
+                return "True";
+            }else
+            {
+                return "False";
+            }
         }
-        return res;
+
     }
     
     public String[][][] getInvalidRows(String name)
     {
         String[][] matrix = null;
         String query = "getInvalidFullRowsCells("+name+",Res).";
+        String res = "";
+        Query ql = new Query(query);
+        String[][][] result = new String[1][][];
+        if(ql.hasSolution())
+        {
+         res = ql.oneSolution().get("Res").toString().replace(", [[","/");//.replace(", [", "|").replace("[[", "");//.replace("]", "");
+         String[] rows = res.split("]]], ");//("]],");
+         String[][] rowCols = new String[rows.length][];
+         result = new String[rows.length][][];
+         for(int i = 0; i < rows.length; i++)
+         {
+            //Obteniendo las filas
+            rowCols[i] = rows[i].replace("[","").replace(" ", "").replace("]", "").split("/");
+            result[i] = new String[rowCols[i].length][];
+            result[i][0] = new String[1];
+            result[i][0][0] = rowCols[i][0];
+            if(rowCols[i].length > 1)
+            {
+                for (int j = 0; j < rowCols[i].length; j++)
+                {
+                    String[] temp = rowCols[i][j].replace("]","").split(",");
+                    //result[i][j] = new String[temp.length];
+                    result[i][j] = temp;
+                }
+            }
+
+         }
+         System.out.println(res);
+        }
+        return result;
+    }
+    
+    public String[][][] getInvalidColumns(String name)
+    {
+        String[][] matrix = null;
+        String query = "getInvalidFullColumnsCells("+name+",Res).";
         String res = "";
         Query ql = new Query(query);
         String[][][] result = new String[1][][];
@@ -110,6 +158,8 @@ public class Logic {
         }
         return matrix;
     }
+    
+
     
     public void printM(String[][] m)
     {
