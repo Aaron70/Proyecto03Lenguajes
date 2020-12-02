@@ -28,6 +28,12 @@ public class Logic {
         
     }
     
+    public boolean won()
+    {
+        Query ql = new Query("won(res)");
+        return ql.hasSolution();
+    }
+    
     public boolean createMatrix(Integer rows, Integer columns)
     {
         String query = "createMatrix(res,"+rows.toString()+","+columns.toString()+").";
@@ -45,6 +51,27 @@ public class Logic {
     public void deleteGame()
     {
         this.doAQuery("deleteGame().",false);
+    }
+    
+    public String correctDigits()
+    {
+        Query ql = new Query("correctDigits(res,Res)");
+        String res = ql.oneSolution().get("Res").toString();
+        return res;
+    }
+    
+    public String incorrectDigits()
+    {
+        Query ql = new Query("incorrectDigits(res,Res)");
+        String res = ql.oneSolution().get("Res").toString();
+        return res;
+    }
+    
+    public String digits()
+    {
+        Query ql = new Query("digits(res,Res)");
+        String res = ql.oneSolution().get("Res").toString();
+        return res;
     }
     
     public String doAQuery(String query,boolean hasRes)
@@ -69,6 +96,8 @@ public class Logic {
         }
 
     }
+    
+    
     
     public Integer[] getSuggestion()
     {

@@ -45,6 +45,7 @@ public class Main extends javax.swing.JFrame {
         int rows = 10;
         int columns = 10;
         createGame(rows, columns);
+        updateConters();
     }
 
     /**
@@ -61,6 +62,15 @@ public class Main extends javax.swing.JFrame {
         btn.setLocation((posY*this.BTNSIZE), (posX*this.BTNSIZE));
         btn.setBackground(Color.WHITE);
         return btn;
+    }
+    
+    public void updateConters()
+    {
+        this.lb_correctos.setText("Digitos correctos: "+this.prolog.correctDigits());
+        this.lb_incorrectos.setText("Digitos incorrectos: "+this.prolog.incorrectDigits());
+        Integer colocados = new Integer(this.prolog.correctDigits()) + new Integer(this.prolog.incorrectDigits()) ;
+        this.lb_puestos.setText("Colocados: "+colocados.toString());
+        this.lb_vacios.setText("Vacios: "+this.prolog.digits());
     }
     
     public void createGame(int rows, int columns)
@@ -123,15 +133,22 @@ public class Main extends javax.swing.JFrame {
         return indices;
     }
     
+    private void won()
+    {
+        if(this.prolog.won())
+        {
+            System.out.println("Gano");
+        }
+    }
+    
     private void Click(JButton btn)
    {
        Integer[] indices = getIndices(btn);
        Integer x = indices[0];
        Integer y = indices[1];
        updateMatrix(this.prolog.placeCell("res",x, y, this.selected),this.mButton);
-       //System.out.println(this.prolog.doAQuery("getRemainingNumbers(res,"+x.toString()+","+y.toString()+",Res)."));
-       //System.out.println(this.prolog.doAQuery("getInvalidRowCells(res,"+x+","+y+",Res)."));
-       System.out.println(this.prolog.getSuggestion().toString());
+       updateConters();
+       won();
 
    }
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
@@ -158,6 +175,10 @@ public class Main extends javax.swing.JFrame {
         jButton12 = new javax.swing.JButton();
         jButton14 = new javax.swing.JButton();
         jButton15 = new javax.swing.JButton();
+        lb_puestos = new javax.swing.JLabel();
+        lb_vacios = new javax.swing.JLabel();
+        lb_correctos = new javax.swing.JLabel();
+        lb_incorrectos = new javax.swing.JLabel();
 
         javax.swing.GroupLayout jFrame1Layout = new javax.swing.GroupLayout(jFrame1.getContentPane());
         jFrame1.getContentPane().setLayout(jFrame1Layout);
@@ -192,7 +213,7 @@ public class Main extends javax.swing.JFrame {
         );
         panelLayout.setVerticalGroup(
             panelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 609, Short.MAX_VALUE)
+            .addGap(0, 627, Short.MAX_VALUE)
         );
 
         jButton2.setBackground(new java.awt.Color(153, 255, 153));
@@ -334,6 +355,22 @@ public class Main extends javax.swing.JFrame {
             }
         });
 
+        lb_puestos.setFont(new java.awt.Font("Tempus Sans ITC", 0, 14)); // NOI18N
+        lb_puestos.setForeground(new java.awt.Color(102, 102, 102));
+        lb_puestos.setText("jLabel2");
+
+        lb_vacios.setFont(new java.awt.Font("Tempus Sans ITC", 0, 14)); // NOI18N
+        lb_vacios.setForeground(new java.awt.Color(102, 102, 102));
+        lb_vacios.setText("jLabel2");
+
+        lb_correctos.setFont(new java.awt.Font("Tempus Sans ITC", 0, 14)); // NOI18N
+        lb_correctos.setForeground(new java.awt.Color(102, 102, 102));
+        lb_correctos.setText("jLabel2");
+
+        lb_incorrectos.setFont(new java.awt.Font("Tempus Sans ITC", 0, 14)); // NOI18N
+        lb_incorrectos.setForeground(new java.awt.Color(102, 102, 102));
+        lb_incorrectos.setText("jLabel2");
+
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
@@ -345,9 +382,6 @@ public class Main extends javax.swing.JFrame {
                         .addComponent(jButton13, javax.swing.GroupLayout.PREFERRED_SIZE, 103, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(jButton11, javax.swing.GroupLayout.PREFERRED_SIZE, 103, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addGap(31, 31, 31)
-                        .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 182, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addGap(53, 53, 53)
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -373,12 +407,24 @@ public class Main extends javax.swing.JFrame {
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(jButton3))))
                     .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addGap(30, 30, 30)
+                        .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 182, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(lb_vacios)
+                            .addComponent(lb_puestos))
+                        .addGap(62, 62, 62)
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(lb_incorrectos)
+                            .addComponent(lb_correctos)))
+                    .addGroup(jPanel2Layout.createSequentialGroup()
                         .addContainerGap()
                         .addComponent(jButton12, javax.swing.GroupLayout.PREFERRED_SIZE, 103, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(jButton14, javax.swing.GroupLayout.PREFERRED_SIZE, 103, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addGap(67, 67, 67)
+                        .addGap(63, 63, 63)
                         .addComponent(jButton15)))
                 .addContainerGap(26, Short.MAX_VALUE))
         );
@@ -414,24 +460,32 @@ public class Main extends javax.swing.JFrame {
                     .addComponent(jButton14))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jButton15)
-                .addContainerGap(72, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 74, Short.MAX_VALUE)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(lb_vacios)
+                    .addComponent(lb_correctos))
+                .addGap(30, 30, 30)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(lb_incorrectos)
+                    .addComponent(lb_puestos))
+                .addContainerGap())
         );
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addContainerGap()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                .addContainerGap(31, Short.MAX_VALUE)
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(17, Short.MAX_VALUE))
+                .addGap(24, 24, 24))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(34, 34, 34)
+                .addGap(40, 40, 40)
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(116, Short.MAX_VALUE))
+                .addContainerGap(110, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -441,21 +495,17 @@ public class Main extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(panel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 17, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
+                .addGap(0, 21, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(panel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(26, 26, 26)
-                        .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(67, Short.MAX_VALUE))
+                    .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(panel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(59, Short.MAX_VALUE))
         );
 
         pack();
@@ -544,7 +594,7 @@ public class Main extends javax.swing.JFrame {
             this.jButton15.setText("Suggestions ("+this.suggestions.toString()+")");
         }
         this.jButton15.setEnabled(this.suggestions > 0);
-        
+        updateConters();
     }//GEN-LAST:event_jButton15ActionPerformed
     
     private void markInvalidRows()
@@ -708,6 +758,10 @@ public class Main extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
+    private javax.swing.JLabel lb_correctos;
+    private javax.swing.JLabel lb_incorrectos;
+    private javax.swing.JLabel lb_puestos;
+    private javax.swing.JLabel lb_vacios;
     private javax.swing.JPanel panel;
     // End of variables declaration//GEN-END:variables
 }

@@ -684,3 +684,32 @@ suggestionAux(Res):-
     Val1 is 0,
     Res = [Row,Col,Val].
 
+correctDigits(Matrix,Res):-
+    findall(Val,(
+        cell(solution,Row,Col,Val1),
+        cell(Matrix,Row,Col,Val2),
+        Val1 is Val2,
+        not(Val1 is -1),
+        not(Val2 is 0)
+    ),Digits),
+    length(Digits,L),
+    Res = L.
+
+incorrectDigits(Matrix,Res):-
+    findall(Val,(
+        cell(solution,Row,Col,Val1),
+        cell(Matrix,Row,Col,Val2),
+        not(Val1 is Val2),
+        not(Val1 is -1),
+        not(Val2 is 0)
+    ),Digits),
+    length(Digits,L),
+    Res = L.
+
+digits(Matrix,Res):-
+    findall(Val,(
+        cell(Matrix,Row,Col,Val2),
+        Val2 is 0
+    ),Digits),
+    length(Digits,L),
+    Res = L.
