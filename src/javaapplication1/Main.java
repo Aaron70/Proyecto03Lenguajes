@@ -579,6 +579,20 @@ public class Main extends javax.swing.JFrame {
     private void jButton11ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton11ActionPerformed
         // TODO add your handling code here:
         updateMatrix(this.prolog.getMatrix("solution"),this.mButton);
+        jButton1.setEnabled(false);
+        jButton2.setEnabled(false);
+        jButton3.setEnabled(false);
+        jButton4.setEnabled(false);
+        jButton5.setEnabled(false);
+        jButton6.setEnabled(false);
+        jButton7.setEnabled(false);
+        jButton8.setEnabled(false);
+        jButton9.setEnabled(false);
+        jButton12.setEnabled(false);
+        jButton13.setEnabled(false);
+        jButton10.setEnabled(false);
+        jButton15.setEnabled(false);
+        
         //System.out.println(this.prolog.doAQuery("getRowsSums(solution,Res)."));
         //setRowSums();
     }//GEN-LAST:event_jButton11ActionPerformed
@@ -595,6 +609,19 @@ public class Main extends javax.swing.JFrame {
         this.prolog.deleteGame();
         panel.removeAll();
         //this.mButton = new JButton[10][10];
+        jButton1.setEnabled(true);
+        jButton2.setEnabled(true);
+        jButton3.setEnabled(true);
+        jButton4.setEnabled(true);
+        jButton5.setEnabled(true);
+        jButton6.setEnabled(true);
+        jButton7.setEnabled(true);
+        jButton8.setEnabled(true);
+        jButton9.setEnabled(true);
+        jButton12.setEnabled(true);
+        jButton13.setEnabled(true);
+        jButton10.setEnabled(true);
+        jButton15.setEnabled(true);
         panel.updateUI();
         createGame(10, 10);
     }//GEN-LAST:event_jButton14ActionPerformed
@@ -619,7 +646,7 @@ public class Main extends javax.swing.JFrame {
         markInvalidRows();
         markInvalidColumns();
         if (this.cont == 0 ){
-            JOptionPane.showMessageDialog(null, "No hay casillas erroneas 1");
+            JOptionPane.showMessageDialog(null, "No hay casillas erroneas");
             this.cont = 0;
         }
     }//GEN-LAST:event_jButton13MouseClicked
