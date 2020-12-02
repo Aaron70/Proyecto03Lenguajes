@@ -138,7 +138,7 @@ public class Main extends javax.swing.JFrame {
     {
         if(this.prolog.won())
         {
-            System.out.println("Gano");
+            JOptionPane.showMessageDialog(null, "¡Felicidades! Ganaste...¡yei!");
         }
     }
     
