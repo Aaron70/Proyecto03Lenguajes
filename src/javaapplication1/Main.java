@@ -27,6 +27,7 @@ public class Main extends javax.swing.JFrame {
     final int BTNSIZE;
     final int MARGING;
     int selected;
+    Integer cont = 0;
     String[][] matrix;
     Logic prolog;
     JButton[][] mButton;
@@ -206,9 +207,7 @@ public class Main extends javax.swing.JFrame {
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setBackground(new java.awt.Color(0, 102, 102));
         setForeground(new java.awt.Color(0, 153, 153));
-        setMaximumSize(new java.awt.Dimension(992, 662));
         setMinimumSize(new java.awt.Dimension(992, 662));
-        setPreferredSize(new java.awt.Dimension(992, 662));
         setResizable(false);
 
         panel.setBackground(new java.awt.Color(0, 102, 102));
@@ -334,9 +333,14 @@ public class Main extends javax.swing.JFrame {
         jButton13.setBackground(new java.awt.Color(153, 255, 153));
         jButton13.setFont(new java.awt.Font("Tempus Sans ITC", 0, 12)); // NOI18N
         jButton13.setText("Verificar");
+        jButton13.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jButton13MouseClicked(evt);
+            }
+        });
         jButton13.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton10ActionPerformed(evt);
+                jButton13ActionPerformed(evt);
             }
         });
 
@@ -570,8 +574,6 @@ public class Main extends javax.swing.JFrame {
     private void jButton10ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton10ActionPerformed
         // TODO add your handling code here:
         this.selected = 0;
-        markInvalidRows();
-        markInvalidColumns();
     }//GEN-LAST:event_jButton10ActionPerformed
 
     private void jButton11ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton11ActionPerformed
@@ -585,6 +587,7 @@ public class Main extends javax.swing.JFrame {
         // TODO add your handling code here:   
        System.out.println(this.prolog.doAQuery("resetMatrix(res).",false));
        updateMatrix(this.prolog.getMatrix("res"),this.mButton);
+       this.cont = 0;
     }//GEN-LAST:event_jButton12ActionPerformed
 
     private void jButton14ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton14ActionPerformed
@@ -609,6 +612,21 @@ public class Main extends javax.swing.JFrame {
         this.jButton15.setEnabled(this.suggestions > 0);
         updateConters();
     }//GEN-LAST:event_jButton15ActionPerformed
+
+    private void jButton13MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton13MouseClicked
+        // TODO add your handling code here:
+        this.cont = 0;
+        markInvalidRows();
+        markInvalidColumns();
+        if (this.cont == 0 ){
+            JOptionPane.showMessageDialog(null, "No hay casillas erroneas 1");
+            this.cont = 0;
+        }
+    }//GEN-LAST:event_jButton13MouseClicked
+
+    private void jButton13ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton13ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jButton13ActionPerformed
     
     private void markInvalidRows()
     {
@@ -629,17 +647,19 @@ public class Main extends javax.swing.JFrame {
                         {
                             Integer y = new Integer(rows[i][j][k]);
                             this.mButton[x][y].setBackground(Color.red);
-                            System.out.println("Eje x: "+x.toString()+"\nEje y: "+y.toString());   
+                            this.cont+=1;
+                            System.out.println("Eje x: "+x.toString()+"\nEje y: "+y.toString()+"con: "+cont.toString()); 
                         }
                     }
                 }
             }
-        }
+        }   
     }
     
     private void markInvalidColumns()
     {
         String[][][] rows = this.prolog.getInvalidColumns("res");
+        int cont = 0;
         for(int i = 0; i < rows.length; i++)
         {
             if(rows[i] == null){
@@ -656,6 +676,7 @@ public class Main extends javax.swing.JFrame {
                         {
                             Integer x = new Integer(rows[i][j][k]);
                             this.mButton[x][y].setBackground(Color.red);
+                            this.cont+= 1;
                             System.out.println("Eje x: "+x.toString()+"\nEje y: "+y.toString());   
                         }
                     }
