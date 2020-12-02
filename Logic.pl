@@ -484,7 +484,7 @@ deleteNotRepeatedRowCells(Matrix,Row):-
     current_predicate(rowRepeatedValue/4),
     rowRepeatedValue(Col,Matrix,Row,Val),
     not(isRepeatedRow(Matrix,Row,Val)),
-    retract(rowRepeatedValue(Col,Matrix,Row,Val)).
+    retractall(rowRepeatedValue(Col,Matrix,Row,Val)).
 
 
 /*
@@ -665,12 +665,17 @@ resetMatrix(Matrix):-
     retractall(columnRepeatedValue(_,Matrix,_,_)),fail.
 
 deleteGame():-
-    retract(cell(_,_,_,_)),
-    retractall(rowRepeatedValue(_,_,_,_)),
-    retractall(columnRepeatedValue(_,_,_,_)),
-    retractall(dimensions(_,_)),
-    retractall(row(_,_,_,_)),
-    retractall(column(_,_,_,_)).
+    retract(cell(res,_,_,_)),
+    retractall(rowRepeatedValue(_,res,_,_)),
+    retractall(columnRepeatedValue(_,res,_,_)),
+    retractall(dimensions(MaxRow,MaxCol)),
+    retractall(row(res,_,_,_)),
+    retractall(column(res,_,_,_)),
+    retract(cell(solution,_,_,_)),
+    retractall(rowRepeatedValue(_,solution,_,_)),
+    retractall(columnRepeatedValue(_,solution,_,_)),
+    retractall(row(solution,_,_,_)),
+    retractall(column(solution,_,_,_)),fail.
 
 suggestionAux(Res):-
     dimensions(MaxRow,MaxCol),

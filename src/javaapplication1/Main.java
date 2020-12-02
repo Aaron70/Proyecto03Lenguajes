@@ -87,6 +87,7 @@ public class Main extends javax.swing.JFrame {
         setSums();
         this.matrix = this.prolog.getMatrix("res");
         updateMatrix(this.matrix,this.mButton);
+        updateConters();
     }
     
     private void setSums()
@@ -578,9 +579,11 @@ public class Main extends javax.swing.JFrame {
 
     private void jButton14ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton14ActionPerformed
         // TODO add your handling code here:
-        this.dispose();
-        Inicio inicio= new Inicio();
-        inicio.setVisible(true);
+        this.prolog.deleteGame();
+        panel.removeAll();
+        //this.mButton = new JButton[10][10];
+        panel.updateUI();
+        createGame(10, 10);
     }//GEN-LAST:event_jButton14ActionPerformed
 
     private void jButton15ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton15ActionPerformed
