@@ -30,6 +30,7 @@ public class Main extends javax.swing.JFrame {
     String[][] matrix;
     Logic prolog;
     JButton[][] mButton;
+    Integer suggestions;
     
     /**
      * Creates new form Main
@@ -39,10 +40,12 @@ public class Main extends javax.swing.JFrame {
         this.BTNSIZE = 60;
         this.MARGING = 10;
         this.selected = 0;
+        this.suggestions = 5;
         initComponents();
         int rows = 10;
         int columns = 10;
         createGame(rows, columns);
+        updateConters();
     }
 
     /**
@@ -59,6 +62,15 @@ public class Main extends javax.swing.JFrame {
         btn.setLocation((posY*this.BTNSIZE), (posX*this.BTNSIZE));
         btn.setBackground(Color.WHITE);
         return btn;
+    }
+    
+    public void updateConters()
+    {
+        this.lb_correctos.setText("Correct Digits: "+this.prolog.correctDigits());
+        this.lb_incorrectos.setText("Inorrect Digits: "+this.prolog.incorrectDigits());
+        Integer colocados = new Integer(this.prolog.correctDigits()) + new Integer(this.prolog.incorrectDigits()) ;
+        this.lb_puestos.setText("Colocados: "+colocados.toString());
+        this.lb_vacios.setText("Empty: "+this.prolog.digits());
     }
     
     public void createGame(int rows, int columns)
@@ -127,9 +139,10 @@ public class Main extends javax.swing.JFrame {
        Integer x = indices[0];
        Integer y = indices[1];
        updateMatrix(this.prolog.placeCell("res",x, y, this.selected),this.mButton);
+       updateConters();
        //System.out.println(this.prolog.doAQuery("getRemainingNumbers(res,"+x.toString()+","+y.toString()+",Res)."));
-       //System.out.println(this.prolog.doAQuery("getInvalidRowCells(res,"+x+","+y+",Res)."));
-       //System.out.println(this.prolog.doAQuery("suggestion(Res).",true));
+       //System.out.println(this.prolog.doAQuery("digits(res,Res).",true));
+       //System.out.println(this.prolog.getSuggestion().toString());
 
    }
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
@@ -155,6 +168,11 @@ public class Main extends javax.swing.JFrame {
         jButton13 = new javax.swing.JButton();
         jButton12 = new javax.swing.JButton();
         jButton14 = new javax.swing.JButton();
+        jButton15 = new javax.swing.JButton();
+        lb_vacios = new javax.swing.JLabel();
+        lb_puestos = new javax.swing.JLabel();
+        lb_correctos = new javax.swing.JLabel();
+        lb_incorrectos = new javax.swing.JLabel();
 
         javax.swing.GroupLayout jFrame1Layout = new javax.swing.GroupLayout(jFrame1.getContentPane());
         jFrame1.getContentPane().setLayout(jFrame1Layout);
@@ -188,7 +206,7 @@ public class Main extends javax.swing.JFrame {
         );
         panelLayout.setVerticalGroup(
             panelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
+            .addGap(0, 685, Short.MAX_VALUE)
         );
 
         jButton2.setText("1");
@@ -291,6 +309,13 @@ public class Main extends javax.swing.JFrame {
             }
         });
 
+        jButton15.setText("Suggestion (5)");
+        jButton15.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton15ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
@@ -330,7 +355,8 @@ public class Main extends javax.swing.JFrame {
                                         .addComponent(jButton13, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                         .addComponent(jButton11, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                         .addComponent(jButton12, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                        .addComponent(jButton14, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))))
+                                        .addComponent(jButton14, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                        .addComponent(jButton15, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))))
                         .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
         );
         jPanel2Layout.setVerticalGroup(
@@ -363,7 +389,9 @@ public class Main extends javax.swing.JFrame {
                 .addComponent(jButton12)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jButton14)
-                .addContainerGap(20, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jButton15)
+                .addContainerGap(29, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
@@ -380,8 +408,16 @@ public class Main extends javax.swing.JFrame {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(369, Short.MAX_VALUE))
+                .addContainerGap(328, Short.MAX_VALUE))
         );
+
+        lb_vacios.setText("jLabel2");
+
+        lb_puestos.setText("jLabel2");
+
+        lb_correctos.setText("jLabel2");
+
+        lb_incorrectos.setText("jLabel2");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -389,19 +425,36 @@ public class Main extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(panel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGap(18, 18, 18)
-                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(panel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGap(18, 18, 18)
+                        .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(lb_vacios)
+                            .addComponent(lb_puestos))
+                        .addGap(78, 78, 78)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(lb_incorrectos)
+                            .addComponent(lb_correctos))
+                        .addGap(0, 0, Short.MAX_VALUE))))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 20, Short.MAX_VALUE))
-                    .addComponent(panel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(panel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(lb_vacios)
+                    .addComponent(lb_correctos))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(lb_puestos)
+                    .addComponent(lb_incorrectos))
                 .addContainerGap())
         );
 
@@ -479,6 +532,20 @@ public class Main extends javax.swing.JFrame {
         Inicio inicio= new Inicio();
         inicio.setVisible(true);
     }//GEN-LAST:event_jButton14ActionPerformed
+
+    private void jButton15ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton15ActionPerformed
+        // TODO add your handling code here:
+        if(this.suggestions > 0){
+            Integer[] ind = this.prolog.getSuggestion();
+            this.prolog.placeCell("res", ind[0], ind[1], ind[2]);
+            updateMatrix(this.prolog.getMatrix("res"),this.mButton);
+            this.mButton[ind[0]][ind[1]].setBackground(Color.GREEN);
+            this.suggestions--;
+            this.jButton15.setText("Suggestions ("+this.suggestions.toString()+")");
+        }
+        this.jButton15.setEnabled(this.suggestions > 0);
+        updateConters();
+    }//GEN-LAST:event_jButton15ActionPerformed
     
     private void markInvalidRows()
     {
@@ -627,6 +694,7 @@ public class Main extends javax.swing.JFrame {
     private javax.swing.JButton jButton12;
     private javax.swing.JButton jButton13;
     private javax.swing.JButton jButton14;
+    private javax.swing.JButton jButton15;
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
     private javax.swing.JButton jButton4;
@@ -640,6 +708,10 @@ public class Main extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
+    private javax.swing.JLabel lb_correctos;
+    private javax.swing.JLabel lb_incorrectos;
+    private javax.swing.JLabel lb_puestos;
+    private javax.swing.JLabel lb_vacios;
     private javax.swing.JPanel panel;
     // End of variables declaration//GEN-END:variables
 }

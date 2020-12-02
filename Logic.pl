@@ -672,20 +672,44 @@ deleteGame():-
     retractall(row(_,_,_,_)),
     retractall(column(_,_,_,_)).
 
-suggestion(Res):-
+suggestionAux(Res):-
     dimensions(MaxRow,MaxCol),
-    random_between(1,MaxRow,Row),
-    random_between(1,MaxCol,Col),
+    MRow is MaxRow-1,
+    MCol is MaxCol-1,
+    random_between(1,MRow,Row),
+    random_between(1,MCol,Col),
     cell(solution,Row,Col,Val),
-    Val is -1,
-    suggestion(Res).
-    
-suggestion(Res):-
-    dimensions(MaxRow,MaxCol),
-    random_between(1,MaxRow,Row),
-    random_between(1,MaxCol,Col),
-    cell(solution,Row,Col,Val),
+    cell(res,Row,Col,Val1),
     not(Val is -1),
+    Val1 is 0,
     Res = [Row,Col,Val].
 
+correctDigits(Matrix,Res):-
+    findall(Val,(
+        cell(solution,Row,Col,Val1),
+        cell(Matrix,Row,Col,Val2),
+        Val1 is Val2,
+        not(Val1 is -1),
+        not(Val2 is 0)
+    ),Digits),
+    length(Digits,L),
+    Res = L.
 
+incorrectDigits(Matrix,Res):-
+    findall(Val,(
+        cell(solution,Row,Col,Val1),
+        cell(Matrix,Row,Col,Val2),
+        not(Val1 is Val2),
+        not(Val1 is -1),
+        not(Val2 is 0)
+    ),Digits),
+    length(Digits,L),
+    Res = L.
+
+digits(Matrix,Res):-
+    findall(Val,(
+        cell(Matrix,Row,Col,Val2),
+        Val2 is 0
+    ),Digits),
+    length(Digits,L),
+    Res = L.
