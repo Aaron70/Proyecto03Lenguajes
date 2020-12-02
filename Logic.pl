@@ -685,7 +685,7 @@ suggestionAux(Res):-
     Res = [Row,Col,Val].
 
 correctDigits(Matrix,Res):-
-    findall(Val,(
+    findall(Val1,(
         cell(solution,Row,Col,Val1),
         cell(Matrix,Row,Col,Val2),
         Val1 is Val2,
@@ -696,7 +696,7 @@ correctDigits(Matrix,Res):-
     Res = L.
 
 incorrectDigits(Matrix,Res):-
-    findall(Val,(
+    findall(Val1,(
         cell(solution,Row,Col,Val1),
         cell(Matrix,Row,Col,Val2),
         not(Val1 is Val2),
@@ -708,8 +708,8 @@ incorrectDigits(Matrix,Res):-
 
 digits(Matrix,Res):-
     findall(Val,(
-        cell(Matrix,Row,Col,Val2),
-        Val2 is 0
+        cell(Matrix,_,_,Val),
+        Val is 0
     ),Digits),
     length(Digits,L),
     Res = L.
