@@ -28,6 +28,12 @@ public class Logic {
         
     }
     
+    public boolean won()
+    {
+        Query ql = new Query("won(res)");
+        return ql.hasSolution();
+    }
+    
     public boolean createMatrix(Integer rows, Integer columns)
     {
         String query = "createMatrix(res,"+rows.toString()+","+columns.toString()+").";

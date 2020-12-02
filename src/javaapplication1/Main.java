@@ -133,6 +133,14 @@ public class Main extends javax.swing.JFrame {
         return indices;
     }
     
+    private void won()
+    {
+        if(this.prolog.won())
+        {
+            System.out.println("Gano");
+        }
+    }
+    
     private void Click(JButton btn)
    {
        Integer[] indices = getIndices(btn);
@@ -140,9 +148,7 @@ public class Main extends javax.swing.JFrame {
        Integer y = indices[1];
        updateMatrix(this.prolog.placeCell("res",x, y, this.selected),this.mButton);
        updateConters();
-       //System.out.println(this.prolog.doAQuery("getRemainingNumbers(res,"+x.toString()+","+y.toString()+",Res)."));
-       //System.out.println(this.prolog.doAQuery("digits(res,Res).",true));
-       //System.out.println(this.prolog.getSuggestion().toString());
+       won();
 
    }
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
