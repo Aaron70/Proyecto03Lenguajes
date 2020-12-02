@@ -30,6 +30,7 @@ public class Main extends javax.swing.JFrame {
     String[][] matrix;
     Logic prolog;
     JButton[][] mButton;
+    Integer suggestions;
     
     /**
      * Creates new form Main
@@ -39,6 +40,7 @@ public class Main extends javax.swing.JFrame {
         this.BTNSIZE = 60;
         this.MARGING = 10;
         this.selected = 0;
+        this.suggestions = 5;
         initComponents();
         int rows = 10;
         int columns = 10;
@@ -129,7 +131,7 @@ public class Main extends javax.swing.JFrame {
        updateMatrix(this.prolog.placeCell("res",x, y, this.selected),this.mButton);
        //System.out.println(this.prolog.doAQuery("getRemainingNumbers(res,"+x.toString()+","+y.toString()+",Res)."));
        //System.out.println(this.prolog.doAQuery("getInvalidRowCells(res,"+x+","+y+",Res)."));
-       //System.out.println(this.prolog.doAQuery("suggestion(Res).",true));
+       System.out.println(this.prolog.getSuggestion().toString());
 
    }
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
@@ -155,6 +157,7 @@ public class Main extends javax.swing.JFrame {
         jButton13 = new javax.swing.JButton();
         jButton12 = new javax.swing.JButton();
         jButton14 = new javax.swing.JButton();
+        jButton15 = new javax.swing.JButton();
 
         javax.swing.GroupLayout jFrame1Layout = new javax.swing.GroupLayout(jFrame1.getContentPane());
         jFrame1.getContentPane().setLayout(jFrame1Layout);
@@ -291,6 +294,13 @@ public class Main extends javax.swing.JFrame {
             }
         });
 
+        jButton15.setText("Suggestion (5)");
+        jButton15.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton15ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
@@ -330,7 +340,8 @@ public class Main extends javax.swing.JFrame {
                                         .addComponent(jButton13, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                         .addComponent(jButton11, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                         .addComponent(jButton12, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                        .addComponent(jButton14, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))))
+                                        .addComponent(jButton14, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                        .addComponent(jButton15, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))))
                         .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
         );
         jPanel2Layout.setVerticalGroup(
@@ -363,7 +374,9 @@ public class Main extends javax.swing.JFrame {
                 .addComponent(jButton12)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jButton14)
-                .addContainerGap(20, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jButton15)
+                .addContainerGap(29, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
@@ -380,7 +393,7 @@ public class Main extends javax.swing.JFrame {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(369, Short.MAX_VALUE))
+                .addContainerGap(328, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -479,6 +492,20 @@ public class Main extends javax.swing.JFrame {
         Inicio inicio= new Inicio();
         inicio.setVisible(true);
     }//GEN-LAST:event_jButton14ActionPerformed
+
+    private void jButton15ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton15ActionPerformed
+        // TODO add your handling code here:
+        if(this.suggestions > 0){
+            Integer[] ind = this.prolog.getSuggestion();
+            this.prolog.placeCell("res", ind[0], ind[1], ind[2]);
+            updateMatrix(this.prolog.getMatrix("res"),this.mButton);
+            this.mButton[ind[0]][ind[1]].setBackground(Color.GREEN);
+            this.suggestions--;
+            this.jButton15.setText("Suggestions ("+this.suggestions.toString()+")");
+        }
+        this.jButton15.setEnabled(this.suggestions > 0);
+        
+    }//GEN-LAST:event_jButton15ActionPerformed
     
     private void markInvalidRows()
     {
@@ -627,6 +654,7 @@ public class Main extends javax.swing.JFrame {
     private javax.swing.JButton jButton12;
     private javax.swing.JButton jButton13;
     private javax.swing.JButton jButton14;
+    private javax.swing.JButton jButton15;
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
     private javax.swing.JButton jButton4;

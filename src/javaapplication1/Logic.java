@@ -52,11 +52,12 @@ public class Logic {
         Query ql = new Query(query);
         if(hasRes)
         {
-            String res = "has not a solution";
+            String res = "has not a solution!";
             if(ql.hasSolution()){
-                res = ql.oneSolution().get("Res").toString();
-            }
-            return res;  
+                return ql.oneSolution().get("Res").toString();
+            }else{
+                return doAQuery(query,hasRes);
+            }  
         }else{
             if(ql.hasSolution())
             {
@@ -67,6 +68,21 @@ public class Logic {
             }
         }
 
+    }
+    
+    public Integer[] getSuggestion()
+    {
+        Query q = new Query("suggestionAux(Res).");
+        try{
+            String res[] = q.oneSolution().get("Res").toString().replace("]", "").replace("[", "").replace(" ","").split(",");
+            Integer[] indices = new Integer[3];
+            indices[0] = new Integer(res[0]);
+            indices[1] = new Integer(res[1]);
+            indices[2] = new Integer(res[2]);
+            return indices;
+        }catch(Exception  err){
+            return getSuggestion();
+        }
     }
     
     public String[][][] getInvalidRows(String name)
