@@ -668,7 +668,7 @@ deleteGame():-
     retract(cell(res,_,_,_)),
     retractall(rowRepeatedValue(_,res,_,_)),
     retractall(columnRepeatedValue(_,res,_,_)),
-    retractall(dimensions(MaxRow,MaxCol)),
+    retractall(dimensions(_,_)),
     retractall(row(res,_,_,_)),
     retractall(column(res,_,_,_)),
     retract(cell(solution,_,_,_)),
