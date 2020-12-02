@@ -334,9 +334,9 @@ public class Main extends javax.swing.JFrame {
         jButton13.setBackground(new java.awt.Color(153, 255, 153));
         jButton13.setFont(new java.awt.Font("Tempus Sans ITC", 0, 12)); // NOI18N
         jButton13.setText("Verificar");
-        jButton13.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton10ActionPerformed(evt);
+        jButton13.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jButton13MouseClicked(evt);
             }
         });
 
@@ -570,8 +570,6 @@ public class Main extends javax.swing.JFrame {
     private void jButton10ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton10ActionPerformed
         // TODO add your handling code here:
         this.selected = 0;
-        markInvalidRows();
-        markInvalidColumns();
     }//GEN-LAST:event_jButton10ActionPerformed
 
     private void jButton11ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton11ActionPerformed
@@ -609,6 +607,12 @@ public class Main extends javax.swing.JFrame {
         this.jButton15.setEnabled(this.suggestions > 0);
         updateConters();
     }//GEN-LAST:event_jButton15ActionPerformed
+
+    private void jButton13MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton13MouseClicked
+        // TODO add your handling code here:
+        markInvalidRows();
+        markInvalidColumns();
+    }//GEN-LAST:event_jButton13MouseClicked
     
     private void markInvalidRows()
     {

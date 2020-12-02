@@ -537,7 +537,15 @@ getInvalidRowCells(Matrix,Row,ID,Res):-
 getInvalidRowCellsAux(_,_,_,[],Temp,Res):- Res = Temp.
 getInvalidRowCellsAux(Matrix,Row,ID,[Val|List],Temp,Res):- 
     Val > 0,
-    findall(Col,(cell(Matrix,Row,Col,Val),getRow(Matrix,Row,Col,ColID,_),ColID is ID),Columns),
+    findall(Col1,(
+        cell(Matrix,Row,Col1,Val),
+        cell(Matrix,Row,Col2,Val),
+        not(Col1 is Col2),
+        getRow(Matrix,Row,Col1,Col1ID,_),
+        getRow(Matrix,Row,Col2,Col2ID,_),
+        Col1ID is Col2ID,
+        Col1ID is ID)
+    ,Columns),
     sort(Columns,Cols),
     getInvalidRowCellsAux(Matrix,Row,ID,List,[Cols|Temp],Res).
 
@@ -621,9 +629,18 @@ getInvalidColumnCells(Matrix,Col,ID,Res):-
 getInvalidColumnCellsAux(_,_,_,[],Temp,Res):- Res = Temp.
 getInvalidColumnCellsAux(Matrix,Col,ID,[Val|List],Temp,Res):- 
     Val > 0,
-    findall(Row,(cell(Matrix,Row,Col,Val),getColumn(Matrix,Row,Col,RowID,_),RowID is ID),Columns),
+    findall(Row1,(
+        cell(Matrix,Row1,Col,Val),
+        cell(Matrix,Row2,Col,Val),
+        not(Row1 is Row2),
+        getColumn(Matrix,Row1,Col,Row1ID,_),
+        getColumn(Matrix,Row2,Col,Row2ID,_),
+        Row1ID is Row2ID,
+        Row1ID is ID),
+    Columns),
     sort(Columns,Cols),
     getInvalidColumnCellsAux(Matrix,Col,ID,List,[Cols|Temp],Res).
+
 
 getInvalidColumnCellsAux(Matrix,Col,ID,[Val|List],Temp,Res):- 
     Val =< 0,
